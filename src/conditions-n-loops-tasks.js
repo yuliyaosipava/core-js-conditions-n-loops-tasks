@@ -127,11 +127,10 @@ function convertToRomanNumerals(num) {
 }
 
 /**
- * Converts a number to a string, replacing digits with words.
- * In this task, the use of methods of the String and Array classes is not allowed.
+ * Converts a number string to its word representation.
  *
- * @param {string} numberStr - The number as a string.
- * @return {string} The number with digits replaced by words.
+ * @param {string} numberStr - The number string to convert.
+ * @return {string} The word representation of the number string.
  *
  * @example:
  *  '1'       => 'one'
@@ -142,7 +141,35 @@ function convertToRomanNumerals(num) {
  *  '1950.2'  => 'one nine five zero point two'
  */
 function convertNumberToString(numberStr) {
-
+  const words = [
+    'zero',
+    'one',
+    'two',
+    'three',
+    'four',
+    'five',
+    'six',
+    'seven',
+    'eight',
+    'nine',
+    'minus',
+    'point',
+  ];
+  let result = '';
+  for (let i = 0; i < numberStr.length; i += 1) {
+    if (i !== 0) result += ' ';
+    switch (true) {
+      case numberStr[i] === '-':
+        result += 'minus';
+        break;
+      case numberStr[i] === '.' || numberStr[i] === ',':
+        result += 'point';
+        break;
+      default:
+        result += words[+numberStr[i]];
+    }
+  }
+  return result;
 }
 
 /**
