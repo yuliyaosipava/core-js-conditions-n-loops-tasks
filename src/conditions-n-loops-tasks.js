@@ -184,19 +184,17 @@ function convertNumberToString(numberStr) {
  *  'qweqwe'    => false
  */
 function isPalindrome(str) {
-  const cleanedStr = str
-    .trim()
-    .replace(/[^a-zA-Z0-9]/g, '')
-    .toLowerCase();
-  const reversedStr = cleanedStr.split('').reverse().join('');
-  return cleanedStr === reversedStr;
+  for (let i = 0; i < str.length; i += 1) {
+    if (str[i] !== str[str.length - 1 - i]) return false;
+  }
+  return true;
 }
 
 /**
- * Finds the first occurrence of a letter in a string.
- * In this task, the use of methods of the String and Array classes is not allowed.
+ * Finds the index of the first occurrence of a letter in a string.
+ * Returns -1 if the letter is not found or if the letter case does not match.
  *
- * @param {string} str - The string to search.
+ * @param {string} str - The string to search in.
  * @param {string} letter - The letter to find.
  * @return {number} The index of the first occurrence of the letter, or -1 if not found.
  *
@@ -207,7 +205,10 @@ function isPalindrome(str) {
  *  'qwerty', 'p'     => -1
  */
 function getIndexOf(str, letter) {
-  return str.indexOf(letter);
+  for (let i = 0; i < str.length - 1; i += 1) {
+    if (str[i] === letter) return i;
+  }
+  return -1;
 }
 
 /**
@@ -226,7 +227,14 @@ function getIndexOf(str, letter) {
  *  12345, 6    => false
  */
 function isContainNumber(num, digit) {
-  return num.toString().includes(digit.toString());
+  let tempNum = num;
+  while (tempNum > 0) {
+    if (tempNum % 10 === digit) {
+      return true;
+    }
+    tempNum = Math.floor(tempNum / 10);
+  }
+  return false;
 }
 
 /**
