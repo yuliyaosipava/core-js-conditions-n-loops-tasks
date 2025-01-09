@@ -184,7 +184,10 @@ function convertNumberToString(numberStr) {
  *  'qweqwe'    => false
  */
 function isPalindrome(str) {
-  const cleanedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  const cleanedStr = str
+    .trim()
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .toLowerCase();
   const reversedStr = cleanedStr.split('').reverse().join('');
   return cleanedStr === reversedStr;
 }
@@ -329,12 +332,16 @@ function rotateMatrix(matrix) {
       result[j][n - 1 - i] = matrix[i][j];
     }
   }
+
+  const rotatedMatrix = [];
   for (let i = 0; i < n; i += 1) {
+    rotatedMatrix.push([]);
     for (let j = 0; j < n; j += 1) {
-      matrix[i][j] = result[i][j];
+      rotatedMatrix[i][j] = result[i][j];
     }
   }
-  return matrix;
+
+  return rotatedMatrix;
 }
 
 /**
@@ -420,7 +427,41 @@ function shuffleChar(str, iterations) {
  * @returns {number} The nearest larger number, or original number if none exists.
  */
 function getNearestBigger(number) {
+  const digits = [];
+  let n = number;
 
+  while (n > 0) {
+    digits.push(n % 10);
+    n = Math.floor(n / 10);
+  }
+
+  digits.reverse();
+
+  let i = digits.length - 2;
+  while (i >= 0 && digits[i] >= digits[i + 1]) {
+    i -= 1;
+  }
+
+  if (i === -1) {
+    return number;
+  }
+
+  let j = digits.length - 1;
+  while (digits[j] <= digits[i]) {
+    j -= 1;
+  }
+
+  [digits[i], digits[j]] = [digits[j], digits[i]];
+
+  const resultDigits = digits
+    .slice(0, i + 1)
+    .concat(digits.slice(i + 1).reverse());
+  let result = 0;
+  for (let k = 0; k < resultDigits.length; k += 1) {
+    result = result * 10 + resultDigits[k];
+  }
+
+  return result;
 }
 
 module.exports = {
