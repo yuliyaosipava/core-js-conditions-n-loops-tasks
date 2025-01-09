@@ -173,8 +173,7 @@ function convertNumberToString(numberStr) {
 }
 
 /**
- * Determines whether a string is a palindrome.
- * In this task, the use of methods of the String and Array classes is not allowed.
+ * Checks if a given string is a palindrome.
  *
  * @param {string} str - The string to check.
  * @return {boolean} True if the string is a palindrome, false otherwise.
@@ -185,7 +184,9 @@ function convertNumberToString(numberStr) {
  *  'qweqwe'    => false
  */
 function isPalindrome(str) {
-
+  const cleanedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  const reversedStr = cleanedStr.split('').reverse().join('');
+  return cleanedStr === reversedStr;
 }
 
 /**
@@ -203,7 +204,7 @@ function isPalindrome(str) {
  *  'qwerty', 'p'     => -1
  */
 function getIndexOf(str, letter) {
-
+  return str.indexOf(letter);
 }
 
 /**
@@ -222,16 +223,14 @@ function getIndexOf(str, letter) {
  *  12345, 6    => false
  */
 function isContainNumber(num, digit) {
-
+  return num.toString().includes(digit.toString());
 }
 
 /**
- * Finds the index of an element in an array where the sum of elements to the left equals the sum of elements to the right.
- * If such an index does not return -1.
- * In this task, the use of methods of the Array and String classes is not allowed.
+ * Finds the balance index in an array where the sum of elements on the left is equal to the sum of elements on the right.
  *
  * @param {number[]} arr - The array to check.
- * @return {number} The index of the balance point, or -1 if none exists.
+ * @return {number} The balance index, or -1 if no balance element exists.
  *
  * @example:
  *  [1, 2, 5, 3, 0] => 2    => 1 + 2 === 3 + 0 then balance element is 5 and its index = 2
@@ -239,7 +238,14 @@ function isContainNumber(num, digit) {
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
 function getBalanceIndex(arr) {
-
+  for (let i = 0; i < arr.length; i += 1) {
+    const leftSum = arr.slice(0, i).reduce((acc, num) => acc + num, 0);
+    const rightSum = arr.slice(i + 1).reduce((acc, num) => acc + num, 0);
+    if (leftSum === rightSum) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 /**
@@ -264,7 +270,39 @@ function getBalanceIndex(arr) {
  *        ]
  */
 function getSpiralMatrix(size) {
+  const matrix = Array(size)
+    .fill()
+    .map(() => Array(size).fill(0));
+  let num = 1;
+  let top = 0;
+  let bottom = size - 1;
+  let left = 0;
+  let right = size - 1;
 
+  while (num <= size * size) {
+    for (let i = left; i <= right; i += 1) {
+      matrix[top][i] = num;
+      num += 1;
+    }
+    top += 1;
+    for (let i = top; i <= bottom; i += 1) {
+      matrix[i][right] = num;
+      num += 1;
+    }
+    right -= 1;
+    for (let i = right; i >= left; i -= 1) {
+      matrix[bottom][i] = num;
+      num += 1;
+    }
+    bottom -= 1;
+    for (let i = bottom; i >= top; i -= 1) {
+      matrix[i][left] = num;
+      num += 1;
+    }
+    left += 1;
+  }
+
+  return matrix;
 }
 
 /**
@@ -283,7 +321,20 @@ function getSpiralMatrix(size) {
  *  ]                 ]
  */
 function rotateMatrix(matrix) {
+  const n = matrix.length;
+  const result = Array.from({ length: n }, () => Array(n).fill(0));
 
+  for (let i = 0; i < n; i += 1) {
+    for (let j = 0; j < n; j += 1) {
+      result[j][n - 1 - i] = matrix[i][j];
+    }
+  }
+  for (let i = 0; i < n; i += 1) {
+    for (let j = 0; j < n; j += 1) {
+      matrix[i][j] = result[i][j];
+    }
+  }
+  return matrix;
 }
 
 /**
@@ -301,7 +352,17 @@ function rotateMatrix(matrix) {
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
 function sortByAsc(arr) {
-
+  const sortedArr = [...arr];
+  for (let i = 0; i < sortedArr.length; i += 1) {
+    for (let j = 0; j < sortedArr.length - 1; j += 1) {
+      if (sortedArr[j] > sortedArr[j + 1]) {
+        const temp = sortedArr[j];
+        sortedArr[j] = sortedArr[j + 1];
+        sortedArr[j + 1] = temp;
+      }
+    }
+  }
+  return sortedArr;
 }
 
 /**
