@@ -383,7 +383,23 @@ function sortByAsc(arr) {
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
 function shuffleChar(str, iterations) {
-
+  let result = str;
+  for (let iter = 0; iter < iterations; iter += 1) {
+    let evenIndex = 0;
+    let oddIndex = Math.ceil(result.length / 2);
+    const temp = result.split('');
+    for (let i = 0; i < result.length; i += 1) {
+      if (i % 2 === 0) {
+        temp[evenIndex] = result[i];
+        evenIndex += 1;
+      } else {
+        temp[oddIndex] = result[i];
+        oddIndex += 1;
+      }
+    }
+    result = temp.join('');
+  }
+  return result;
 }
 
 /**
