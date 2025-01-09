@@ -227,21 +227,26 @@ function getIndexOf(str, letter) {
  *  12345, 6    => false
  */
 function isContainNumber(num, digit) {
-  let tempNum = num;
-  while (tempNum > 0) {
-    if (tempNum % 10 === digit) {
+  const digitCount = String(num).length;
+  for (let pos = 1; pos <= digitCount; pos += 1) {
+    const currentDigit = Math.floor(
+      (num - Math.floor(num / 10 ** pos) * 10 ** pos) / 10 ** (pos - 1)
+    );
+    if (currentDigit === digit) {
       return true;
     }
-    tempNum = Math.floor(tempNum / 10);
   }
+
   return false;
 }
 
 /**
- * Finds the balance index in an array where the sum of elements on the left is equal to the sum of elements on the right.
+ * Finds the index of an element in an array where the sum of elements to the left equals the sum of elements to the right.
+ * If such an index does not return -1.
+ * In this task, the use of methods of the Array and String classes is not allowed.
  *
  * @param {number[]} arr - The array to check.
- * @return {number} The balance index, or -1 if no balance element exists.
+ * @return {number} The index of the balance point, or -1 if none exists.
  *
  * @example:
  *  [1, 2, 5, 3, 0] => 2    => 1 + 2 === 3 + 0 then balance element is 5 and its index = 2
@@ -249,9 +254,15 @@ function isContainNumber(num, digit) {
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
 function getBalanceIndex(arr) {
-  for (let i = 0; i < arr.length; i += 1) {
-    const leftSum = arr.slice(0, i).reduce((acc, num) => acc + num, 0);
-    const rightSum = arr.slice(i + 1).reduce((acc, num) => acc + num, 0);
+  for (let i = 1; i < arr.length - 1; i += 1) {
+    let leftSum = 0;
+    for (let j = 0; j < i; j += 1) {
+      leftSum += arr[j];
+    }
+    let rightSum = 0;
+    for (let j = i + 1; j < arr.length; j += 1) {
+      rightSum += arr[j];
+    }
     if (leftSum === rightSum) {
       return i;
     }
@@ -281,9 +292,13 @@ function getBalanceIndex(arr) {
  *        ]
  */
 function getSpiralMatrix(size) {
-  const matrix = Array(size)
-    .fill()
-    .map(() => Array(size).fill(0));
+  const matrix = [];
+  for (let i = 0; i < size; i += 1) {
+    matrix.push([]);
+    for (let j = 0; j < size; j += 1) {
+      matrix[i].push(0);
+    }
+  }
   let num = 1;
   let top = 0;
   let bottom = size - 1;
@@ -305,187 +320,169 @@ function getSpiralMatrix(size) {
       matrix[bottom][i] = num;
       num += 1;
     }
-    bottom -= 1;
-    for (let i = bottom; i >= top; i -= 1) {
-      matrix[i][left] = num;
-      num += 1;
-    }
-    left += 1;
   }
+  /**
+  * Rotates a matrix by 90 degrees clockwise in place.
+     * Take into account that the matrix size can be very large. Consider how you can optimize your solution.
+     * Usage of String and Array class methods is not allowed in this task.
+     *
+     * @param {number[][]} matrix - The matrix to rotate.
+     * @return {number[][]} The rotated matrix.
+     *
+     * @example:
+     *  [                 [
+     *    [1, 2, 3],        [7, 4, 1],
+     *    [4, 5, 6],  =>    [8, 5, 2],
+     *    [7, 8, 9]         [9, 6, 3]
+     *  ]                 ]
+     */
+  function rotateMatrix(matrix) {
+    const n = matrix.length;
+    const result = Array.from({ length: n }, () => Array(n).fill(0));
 
-  return matrix;
-}
-
-/**
- * Rotates a matrix by 90 degrees clockwise in place.
- * Take into account that the matrix size can be very large. Consider how you can optimize your solution.
- * Usage of String and Array class methods is not allowed in this task.
- *
- * @param {number[][]} matrix - The matrix to rotate.
- * @return {number[][]} The rotated matrix.
- *
- * @example:
- *  [                 [
- *    [1, 2, 3],        [7, 4, 1],
- *    [4, 5, 6],  =>    [8, 5, 2],
- *    [7, 8, 9]         [9, 6, 3]
- *  ]                 ]
- */
-function rotateMatrix(matrix) {
-  const n = matrix.length;
-  const result = Array.from({ length: n }, () => Array(n).fill(0));
-
-  for (let i = 0; i < n; i += 1) {
-    for (let j = 0; j < n; j += 1) {
-      result[j][n - 1 - i] = matrix[i][j];
-    }
-  }
-
-  const rotatedMatrix = [];
-  for (let i = 0; i < n; i += 1) {
-    rotatedMatrix.push([]);
-    for (let j = 0; j < n; j += 1) {
-      rotatedMatrix[i][j] = result[i][j];
-    }
-  }
-
-  return rotatedMatrix;
-}
-
-/**
- * Sorts an array of numbers in ascending order in place.
- * Employ any sorting algorithm of your choice.
- * Take into account that the array can be very large. Consider how you can optimize your solution.
- * In this task, the use of methods of the Array and String classes is not allowed.
- *
- * @param {number[]} arr - The array to sort.
- * @return {number[]} The sorted array.
- *
- * @example:
- *  [2, 9, 5]       => [2, 5, 9]
- *  [2, 9, 5, 9]    => [2, 5, 9, 9]
- *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
- */
-function sortByAsc(arr) {
-  const sortedArr = [...arr];
-  for (let i = 0; i < sortedArr.length; i += 1) {
-    for (let j = 0; j < sortedArr.length - 1; j += 1) {
-      if (sortedArr[j] > sortedArr[j + 1]) {
-        const temp = sortedArr[j];
-        sortedArr[j] = sortedArr[j + 1];
-        sortedArr[j + 1] = temp;
+    for (let i = 0; i < n; i += 1) {
+      for (let j = 0; j < n; j += 1) {
+        result[j][n - 1 - i] = matrix[i][j];
       }
     }
-  }
-  return sortedArr;
-}
 
-/**
- * Shuffles characters in a string so that the characters with an odd index are moved to the end of the string at each iteration.
- * Take into account that the string can be very long and the number of iterations is large. Consider how you can optimize your solution.
- * Usage of Array class methods is not allowed in this task.
- *
- * @param {string} str - The string to shuffle.
- * @param {number} iterations - The number of iterations to perform the shuffle.
- * @return {string} The shuffled string.
- *
- * @example:
- *  '012345', 1 => '024135'
- *  'qwerty', 1 => 'qetwry'
- *  '012345', 2 => '024135' => '043215'
- *  'qwerty', 2 => 'qetwry' => 'qtrewy'
- *  '012345', 3 => '024135' => '043215' => '031425'
- *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
- */
-function shuffleChar(str, iterations) {
-  let result = str;
-  for (let iter = 0; iter < iterations; iter += 1) {
-    let evenIndex = 0;
-    let oddIndex = Math.ceil(result.length / 2);
-    const temp = result.split('');
-    for (let i = 0; i < result.length; i += 1) {
-      if (i % 2 === 0) {
-        temp[evenIndex] = result[i];
-        evenIndex += 1;
-      } else {
-        temp[oddIndex] = result[i];
-        oddIndex += 1;
+    const rotatedMatrix = [];
+    for (let i = 0; i < n; i += 1) {
+      rotatedMatrix.push([]);
+      for (let j = 0; j < n; j += 1) {
+        rotatedMatrix[i][j] = result[i][j];
       }
     }
-    result = temp.join('');
-  }
-  return result;
-}
 
-/**
- * Returns the nearest largest integer consisting of the digits of the given positive integer.
- * If there is no such number, it returns the original number.
- * Usage of String class methods is not allowed in this task.
- *
- * @example:
- * 12345    => 12354
- * 123450   => 123504
- * 12344    => 12434
- * 123440   => 124034
- * 1203450  => 1203504
- * 90822    => 92028
- * 321321   => 322113
- *
- * @param {number} number The source number
- * @returns {number} The nearest larger number, or original number if none exists.
- */
-function getNearestBigger(number) {
-  const digits = [];
-  let n = number;
-
-  while (n > 0) {
-    digits.push(n % 10);
-    n = Math.floor(n / 10);
+    return rotatedMatrix;
   }
 
-  digits.reverse();
-
-  let i = digits.length - 2;
-  while (i >= 0 && digits[i] >= digits[i + 1]) {
-    i -= 1;
+  /**
+   * Sorts an array of numbers in ascending order in place.
+   * Employ any sorting algorithm of your choice.
+   * Take into account that the array can be very large. Consider how you can optimize your solution.
+   * In this task, the use of methods of the Array and String classes is not allowed.
+   *
+   * @param {number[]} arr - The array to sort.
+   * @return {number[]} The sorted array.
+   *
+   * @example:
+   *  [2, 9, 5]       => [2, 5, 9]
+   *  [2, 9, 5, 9]    => [2, 5, 9, 9]
+   *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
+  */
+  function sortByAsc(arr) {
+    const sortedArr = [...arr];
+    for (let i = 0; i < sortedArr.length; i += 1) {
+      for (let j = 0; j < sortedArr.length - 1; j += 1) {
+        if (sortedArr[j] > sortedArr[j + 1]) {
+          const temp = sortedArr[j];
+          sortedArr[j] = sortedArr[j + 1];
+          sortedArr[j + 1] = temp;
+        }
+      }
+    }
+    return sortedArr;
   }
 
-  if (i === -1) {
-    return number;
+  /**
+   * Shuffles characters in a string so that the characters with an odd index are moved to the end of the string at each iteration.
+   * Take into account that the string can be very long and the number of iterations is large. Consider how you can optimize your solution.
+   * Usage of Array class methods is not allowed in this task.
+   *
+   * @param {string} str - The string to shuffle.
+   * @param {number} iterations - The number of iterations to perform the shuffle.
+   * @return {string} The shuffled string.
+   *
+   * @example:
+   *  '012345', 1 => '024135'
+   *  'qwerty', 1 => 'qetwry'
+   *  '012345', 2 => '024135' => '043215'
+   *  'qwerty', 2 => 'qetwry' => 'qtrewy'
+   *  '012345', 3 => '024135' => '043215' => '031425'
+   *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
+   */
+  function shuffleChar(str, iterations) {
+    let result = str;
+    for (let iter = 0; iter < iterations; iter += 1) {
+      let evenIndex = 0;
+      let oddIndex = Math.ceil(result.length / 2);
+      const temp = result.split('');
+      for (let i = 0; i < result.length; i += 1) {
+        if (i % 2 === 0) {
+          temp[evenIndex] = result[i];
+          evenIndex += 1;
+        } else {
+          temp[oddIndex] = result[i];
+          oddIndex += 1;
+        }
+      }
+      result = temp.join('');
+    }
+    return result;
   }
 
-  let j = digits.length - 1;
-  while (digits[j] <= digits[i]) {
-    j -= 1;
+  /**
+   * Returns the nearest largest integer consisting of the digits of the given positive integer.
+   * If there is no such number, it returns the original number.
+   * Usage of String class methods is not allowed in this task.
+   *
+   * @example:
+   * 12345    => 12354
+   * 123450   => 123504
+   * 12344    => 12434
+   * 123440   => 124034
+   * 1203450  => 1203504
+   * 90822    => 92028
+   * 321321   => 322113
+   *
+   * @param {number} number The source number
+   * @returns {number} The nearest larger number, or original number if none exists.
+   */
+  function getNearestBigger(number) {
+    const digits = [];
+    let n = number;
+    while (n > 0) {
+      digits.push(n % 10);
+      n = Math.floor(n / 10);
+    }
+    digits.reverse();
+    let i = digits.length - 2;
+    while (i >= 0 && digits[i] >= digits[i + 1]) {
+      i -= 1;
+    }
+    if (i === -1) {
+      return number;
+    }
+    let j = digits.length - 1;
+    while (digits[j] <= digits[i]) {
+      j -= 1;
+    }
+    [digits[i], digits[j]] = [digits[j], digits[i]];
+    const resultDigits = digits
+      .slice(0, i + 1)
+      .concat(digits.slice(i + 1).reverse());
+    let result = 0;
+    for (let k = 0; k < resultDigits.length; k += 1) {
+      result = result * 10 + resultDigits[k];
+    }
+    return result;
   }
 
-  [digits[i], digits[j]] = [digits[j], digits[i]];
-
-  const resultDigits = digits
-    .slice(0, i + 1)
-    .concat(digits.slice(i + 1).reverse());
-  let result = 0;
-  for (let k = 0; k < resultDigits.length; k += 1) {
-    result = result * 10 + resultDigits[k];
-  }
-
-  return result;
-}
-
-module.exports = {
-  isPositive,
-  getMaxNumber,
-  canQueenCaptureKing,
-  isIsoscelesTriangle,
-  convertToRomanNumerals,
-  convertNumberToString,
-  isPalindrome,
-  getIndexOf,
-  isContainNumber,
-  getBalanceIndex,
-  getSpiralMatrix,
-  rotateMatrix,
-  sortByAsc,
-  shuffleChar,
-  getNearestBigger,
-};
+  module.exports = {
+    isPositive,
+    getMaxNumber,
+    canQueenCaptureKing,
+    isIsoscelesTriangle,
+    convertToRomanNumerals,
+    convertNumberToString,
+    isPalindrome,
+    getIndexOf,
+    isContainNumber,
+    getBalanceIndex,
+    getSpiralMatrix,
+    rotateMatrix,
+    sortByAsc,
+    shuffleChar,
+    getNearestBigger,
+  };  
